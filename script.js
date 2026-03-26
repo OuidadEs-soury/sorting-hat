@@ -10,10 +10,22 @@ const houses = [
 
 button.addEventListener("click", startCeremony)
 
+function speak(text){
+
+const speech = new SpeechSynthesisUtterance(text)
+
+speech.rate = 0.9
+speech.pitch = 0.8
+
+speechSynthesis.speak(speech)
+
+}
+
 function startCeremony(){
 
-result.style.opacity = 1
 result.innerText = "Speak your name..."
+
+speak("Step forward and tell me your name.")
 
 startListening()
 
@@ -26,7 +38,7 @@ window.SpeechRecognition || window.webkitSpeechRecognition
 
 if(!SpeechRecognition){
 
-result.innerText = "Voice magic not supported in this browser."
+result.innerText = "Voice magic not supported."
 return
 
 }
@@ -34,71 +46,59 @@ return
 const recognition = new SpeechRecognition()
 
 recognition.lang = "en-US"
-recognition.interimResults = false
-recognition.maxAlternatives = 1
 
 recognition.start()
 
 recognition.onresult = function(event){
 
-let transcript = event.results[0][0].transcript.toLowerCase()
+let name = event.results[0][0].transcript
 
-console.log("Student name:", transcript)
+result.innerText = name + " approaches the Sorting Hat..."
 
-result.innerText = transcript + " approaches the Sorting Hat..."
+speak(name + "... come closer.")
 
 setTimeout(()=>{
 
-sortStudent(transcript)
+thinkingPhase(name)
 
 },3000)
 
 }
+
+}
+
+function thinkingPhase(name){
+
+result.innerText = "The Sorting Hat is thinking..."
+
+speak("Hmm... difficult... very difficult.")
+
+setTimeout(()=>{
+
+sortStudent(name)
+
+},4000)
 
 }
 
 function sortStudent(name){
 
-result.innerText = "The Sorting Hat is thinking..."
-
-setTimeout(()=>{
-
 const house = houses[Math.floor(Math.random() * houses.length)]
 
-result.innerText = name.toUpperCase() + "... " + house.toUpperCase() + "!"
+result.innerText =
+name.toUpperCase() + "... " + house.toUpperCase() + "!"
 
-result.classList.add("house")
+speak(name + "... you belong in " + house)
 
 changeHouseColor(house)
-
-},3000)
 
 }
 
 function changeHouseColor(house){
 
-if(house === "Gryffindor"){
-
-result.style.color = "#ae0001"
-
-}
-
-if(house === "Slytherin"){
-
-result.style.color = "#2a623d"
-
-}
-
-if(house === "Ravenclaw"){
-
-result.style.color = "#222f5b"
-
-}
-
-if(house === "Hufflepuff"){
-
-result.style.color = "#ecb939"
-
-}
+if(house === "Gryffindor") result.style.color = "#ae0001"
+if(house === "Slytherin") result.style.color = "#2a623d"
+if(house === "Ravenclaw") result.style.color = "#222f5b"
+if(house === "Hufflepuff") result.style.color = "#ecb939"
 
 }
